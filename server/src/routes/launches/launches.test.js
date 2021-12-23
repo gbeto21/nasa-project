@@ -1,18 +1,24 @@
 const request = require("supertest");
 const app = require("../../app");
+const { loadPlanetsData } = require("../../models/planets.model");
 const { mongoConnect, mongoDisconnect } = require("../../services/mongo");
 
 describe("Launches API", () => {
   beforeAll(async () => {
     try {
       await mongoConnect();
+      await loadPlanetsData();
     } catch (error) {
       console.error("Error conectando: ", error);
     }
   });
 
   afterAll(async () => {
-    await mongoDisconnect();
+    try {
+      await mongoDisconnect();
+    } catch (error) {
+      console.error("Error desconectando: ", { error });
+    }
   });
 
   describe("Test GET /launches", () => {
